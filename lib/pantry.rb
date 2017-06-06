@@ -1,39 +1,48 @@
 class Pantry
-  attr_reader :stock
+  attr_reader :stock, :shopping_list
+
   def initialize
     @stock = {}
+    @shopping_list = {}
   end
 
   def stock_check(item)
-    if stock.has_key?(item.downcase)
-      stock[item.downcase]
+    if stock.has_key?(item)
+      stock[item]
     else
       0
     end
   end
 
   def restock(item, quantity)
-    if stock.has_key?(item.downcase)
-      stock[item.downcase] += quantity
+    if stock.has_key?(item)
+      stock[item] += quantity
     else
-      stock[item.downcase] = quantity
+      stock[item] = quantity
     end
   end
 
   def convert_units(recipe)
-    new_amounts = {}
-    recipe.ingredients.each do |ingredient_name, amount|
+    units = {}
+    recipe.ingredients.each do |ingredient, amount|
       if amount < 1
-        new_amounts[ingredient_name] = {quantity: amount * 1000.0,
-                                        units: 'Milli-Units'}
+        units[ingredient] = {quantity: amount * 1000.0, units: 'Milli-Units'}
       elsif amount > 100
-        new_amounts[ingredient_name] = {quantity: amount /100.0,
-                                        units: 'Centi-Units'}
+        units[ingredient] = {quantity: amount /100.0, units: 'Centi-Units'}
       else
-        new_amounts[ingredient_name] = {quantity: amount,
-                                        units: 'Universal Units'}
+        units[ingredient] = {quantity: amount, units: 'Universal Units'}
       end
     end
-    new_amounts
+    units
+  end
+
+  def add_to_shopping_list(recipe)
+    recipe.ingredients.each do |ingredient, amount|
+      if shopping_list.has_key?(ingredient)
+        shopping_list[ingredient] += amount
+      else
+        shopping_list[ingredient] = amount
+      end
+    end
   end
 end

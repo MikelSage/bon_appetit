@@ -18,6 +18,11 @@ class PantryTest < Minitest::Test
     assert pantry.stock.empty?
   end
 
+  def test_it_can_check_its_shopping_list_and_it_starts_empty
+    assert_instance_of Hash, pantry.shopping_list
+    assert pantry.shopping_list.empty?
+  end
+
   def test_it_can_check_the_stock_of_a_single_item
     assert_equal 0, pantry.stock_check('Cheese')
   end
@@ -48,4 +53,28 @@ class PantryTest < Minitest::Test
 
     assert_equal expected, actual
   end
+
+  def test_it_can_add_items_to_shopping_list
+    recipe = Recipe.new("Cheese Pizza")
+    recipe.add_ingredient("Cheese", 20)
+    recipe.add_ingredient("Flour", 20)
+
+    recipe_2 = Recipe.new("Spaghetti")
+    recipe_2.add_ingredient("Noodles", 10)
+    recipe_2.add_ingredient("Sauce", 10)
+    recipe_2.add_ingredient("Cheese", 5)
+
+    expected = {"Cheese" => 20, "Flour" => 20}
+
+    pantry.add_to_shopping_list(recipe)
+
+    assert_equal expected, pantry.shopping_list
+
+    pantry.add_to_shopping_list(recipe_2)
+
+    expected = {"Cheese" => 25, "Flour" => 20, "Noodles" => 10, "Sauce" => 10}
+
+    assert_equal expected, pantry.shopping_list
+  end
+
 end
