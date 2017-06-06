@@ -25,15 +25,27 @@ class Pantry
   def convert_units(recipe)
     units = {}
     recipe.ingredients.each do |ingredient, amount|
-      if amount < 1
-        units[ingredient] = {quantity: amount * 1000.0, units: 'Milli-Units'}
+      if amount % 1 > 0
+        units[ingredient] = handle_mixed_units(amount, 1).compact
       elsif amount > 100
-        units[ingredient] = {quantity: amount /100.0, units: 'Centi-Units'}
+        units[ingredient] = handle_mixed_units(amount, 100).compact
       else
-        units[ingredient] = {quantity: amount, units: 'Universal Units'}
+        units[ingredient] = [{quantity: amount, units: 'Universal Units'}]
       end
     end
     units
+  end
+
+  def handle_mixed_units(amount, divisor)
+    amount.divmod(divisor).map do |num|
+      if num < 1
+        {quantity: (num * 1000.0).round, units: 'Milli-Units'} unless num.zero?
+      elsif num < 10 && divisor == 100
+        {quantity: num , units: 'Centi-Units'}
+      else
+        {quantity: num, units: 'Universal Units'}
+      end
+    end
   end
 
   def add_to_shopping_list(recipe)

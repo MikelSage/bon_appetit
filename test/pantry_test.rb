@@ -46,9 +46,9 @@ class PantryTest < Minitest::Test
     recipe.add_ingredient("Cheese", 75)
     recipe.add_ingredient("Flour", 500)
 
-    expected = {"Cayenne Pepper" => {quantity: 25, units: "Milli-Units"},
-                "Cheese"         => {quantity: 75, units: "Universal Units"},
-                "Flour"          => {quantity: 5, units: "Centi-Units"}}
+    expected = {"Cayenne Pepper" => [{quantity: 25, units: "Milli-Units"}],
+                "Cheese"         => [{quantity: 75, units: "Universal Units"}],
+                "Flour"          => [{quantity: 5, units: "Centi-Units"}]}
 
     actual = pantry.convert_units(recipe)
 
@@ -76,5 +76,17 @@ class PantryTest < Minitest::Test
     expected = {"Cheese" => 25, "Flour" => 20, "Noodles" => 10, "Sauce" => 10}
 
     assert_equal expected, pantry.shopping_list
+  end
+
+  def test_some_helper_method
+    expected = [{:quantity=>5, :units=>"Centi-Units"},
+                {:quantity=>50, :units=>"Universal Units"}]
+
+    assert_equal expected, pantry.handle_mixed_units(550, 100)
+
+    expected = [{quantity: 1, units: "Universal Units"},
+                {quantity: 25, units: "Milli-Units"}]
+
+    assert_equal expected, pantry.handle_mixed_units(1.025, 1)
   end
 end
