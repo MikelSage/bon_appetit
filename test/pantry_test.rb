@@ -1,6 +1,7 @@
-require './lib/pantry'
 require 'minitest/autorun'
 require 'minitest/pride'
+require './lib/pantry'
+require './lib/recipe'
 
 class PantryTest < Minitest::Test
   attr_reader :pantry
@@ -31,5 +32,20 @@ class PantryTest < Minitest::Test
     pantry.restock('Cheese', 45)
 
     assert_equal 55, pantry.stock_check('Cheese')
+  end
+
+  def test_it_can_convert_ingredient_units
+    recipe = Recipe.new("Spicy Cheese Pizza")
+    recipe.add_ingredient("Cayenne Pepper", 0.025)
+    recipe.add_ingredient("Cheese", 75)
+    recipe.add_ingredient("Flour", 500)
+
+    expected = {"Cayenne Pepper" => {quantity: 25, units: "Milli-Units"},
+                "Cheese"         => {quantity: 75, units: "Universal Units"},
+                "Flour"          => {quantity: 5, units: "Centi-Units"}}
+
+    actual = pantry.convert_units(recipe)
+
+    assert_equal expected, actual
   end
 end
