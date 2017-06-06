@@ -11,4 +11,12 @@ class Pantry
       0
     end
   end
+
+  def restock(item, quantity)
+    if stock.has_key?(item.downcase)
+      stock[item.downcase] += quantity
+    else
+      stock[item.downcase] = quantity
+    end
+  end
 end
