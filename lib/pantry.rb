@@ -7,33 +7,25 @@ class Pantry
   end
 
   def stock_check(item)
-    if stock.has_key?(item)
-      stock[item]
-    else
-      0
-    end
+    stock.has_key?(item) ? stock[item] : 0
   end
 
   def restock(item, quantity)
-    if stock.has_key?(item)
-      stock[item] += quantity
-    else
-      stock[item] = quantity
-    end
+    stock.has_key?(item) ? stock[item] += quantity : stock[item] = quantity
   end
 
   def convert_units(recipe)
-    units = {}
-    recipe.ingredients.each do |ingredient, amount|
-      if amount % 1 > 0
-        units[ingredient] = handle_mixed_units(amount, 1).compact
-      elsif amount > 100
-        units[ingredient] = handle_mixed_units(amount, 100).compact
-      else
-        units[ingredient] = [{quantity: amount, units: 'Universal Units'}]
-      end
+    recipe.ingredients.to_a.reduce(Hash.new(0)) do |units, pair|
+        name, amount = pair
+        if amount % 1 > 0
+          units[name] = handle_mixed_units(amount, 1).compact
+        elsif amount > 100
+          units[name] = handle_mixed_units(amount, 100).compact
+        else
+          units[name] = handle_mixed_units(amount, 1).compact
+        end
+        units
     end
-    units
   end
 
   def handle_mixed_units(amount, divisor)
