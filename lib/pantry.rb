@@ -45,4 +45,11 @@ class Pantry
       end
     end
   end
+
+  def print_shopping_list
+    list = shopping_list.to_a.reduce("") do |string, pair|
+      string << "* #{pair[0]}: #{pair[1]}\n"
+    end
+    puts list
+  end
 end

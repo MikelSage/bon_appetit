@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/pantry'
 require './lib/recipe'
+require "pry"
 
 class PantryTest < Minitest::Test
   attr_reader :pantry
@@ -76,5 +77,4 @@ class PantryTest < Minitest::Test
 
     assert_equal expected, pantry.shopping_list
   end
-
 end
